@@ -55,6 +55,17 @@ jobs:
           ls -la
           cat some.txt
 
+      - name: Create .env file
+        run: |
+          cat << EOF > .env
+          ENV=bonga
+          NPM_AUTH_TOKEN=${{ secrets.NPM_AUTH_TOKEN }}
+          NEXT_PUBLIC_COMMIT_SHA=${{ github.sha }}
+          NEXT_PUBLIC_BUILD_TYPE=stable
+          PORT=3000
+          EOF
+
+
       # 🔥 Docker build using build-push-action
       - name: Build Docker image
         uses: docker/build-push-action@v5
