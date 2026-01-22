@@ -24,7 +24,7 @@ jobs:
       - name: Read file in next step
         run: |
           echo "File exists?"
-          ls -la .env
+          ls -la
 
           echo "File contents:"
           cat .env
