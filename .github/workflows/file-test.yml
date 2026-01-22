@@ -1,0 +1,30 @@
+name: File Persistence Test
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # STEP 1: Create a file
+      - name: Create sample env file
+        run: |
+          echo "APP_NAME=SampleApp" > .env
+          echo "VERSION=1.0.0" >> .env
+
+      # STEP 2: Use the file (no upload, no cache)
+      - name: Read file in next step
+        run: |
+          echo "File exists?"
+          ls -la .env
+
+          echo "File contents:"
+          cat .env
