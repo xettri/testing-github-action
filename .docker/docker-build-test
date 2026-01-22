@@ -6,11 +6,11 @@ WORKDIR /app
 COPY some.txt some.txt
 COPY .env .env
 
+RUN echo "Ohh yehhhhhhhhhhh"
+RUN cat some.txt
+RUN cat .env 
+
 # Show file inside container
 CMD sh -c "\
-  echo 'Inside Docker container:' && \
-  echo '------------------------' && \
-  cat .env && \
-  echo '------------------------\n\n' && \
-  cat some.txt \
+  echo 'Inside Docker container:'\
 "
