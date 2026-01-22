@@ -1,10 +1,9 @@
 FROM alpine:latest
 
 WORKDIR /app
+COPY . .
 
-# Copy env file from build context
-COPY some.txt some.txt
-COPY .env .env
+RUN ls -la
 
 RUN echo "Ohh yehhhhhhhhhhh"
 RUN cat some.txt
