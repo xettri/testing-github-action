@@ -49,5 +49,4 @@ jobs:
 
           echo ""
           echo "Read files:"
-          cat .env
           cat src/some/test.txt
