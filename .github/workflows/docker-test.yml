@@ -30,6 +30,8 @@ jobs:
           name: env-file
           path: .env
           retention-days: 1
+          if-no-files-found: error
+          include-hidden-files: true
 
   # ---------------------------------
   # JOB 2: Download file & Docker build
