@@ -1,0 +1,13 @@
+FROM alpine:latest
+
+WORKDIR /app
+
+# Copy env file from build context
+COPY .env .env
+
+# Show file inside container
+CMD sh -c "\
+  echo 'Inside Docker container:' && \
+  echo '------------------------' && \
+  cat .env \
+"

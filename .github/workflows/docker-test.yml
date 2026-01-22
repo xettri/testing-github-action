@@ -1,0 +1,63 @@
+name: Docker Artifact Build Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  # -----------------------------
+  # JOB 1: Create file & upload
+  # -----------------------------
+  create-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create env file
+        run: |
+          echo "APP_NAME=ArtifactDockerTest" > .env
+          echo "APP_ENV=ci" >> .env
+          echo "bonga=true" >> .env
+          echo "VERSION=1.0.0" >> .env
+
+      - name: Show created file
+        run: cat .env
+
+      - name: Upload file as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: env-file
+          path: .env
+          retention-days: 1
+
+  # ---------------------------------
+  # JOB 2: Download file & Docker build
+  # ---------------------------------
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: create-file
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download env file
+        uses: actions/download-artifact@v4
+        with:
+          name: env-file
+
+      - name: Verify downloaded file
+        run: |
+          echo "Workspace files:"
+          ls -la
+          cat .env
+
+      # 🔥 Docker build using build-push-action
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: .docker/docker-build-test
+          push: false
+          tags: artifact-docker-test:latest
