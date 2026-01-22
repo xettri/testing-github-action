@@ -16,19 +16,19 @@ jobs:
 
       - name: Create env file
         run: |
-          echo "APP_NAME=ArtifactDockerTest" > .env
-          echo "APP_ENV=ci" >> .env
-          echo "bonga=true" >> .env
-          echo "VERSION=1.0.0" >> .env
+          echo "APP_NAME=ArtifactDockerTest" > some.txt
+          echo "APP_ENV=ci" >> some.txt
+          echo "bonga=true" >> some.txt
+          echo "VERSION=1.0.0" >> some.txt
 
       - name: Show created file
-        run: cat .env
+        run: cat some.txt
 
       - name: Upload file as artifact
         uses: actions/upload-artifact@v4
         with:
           name: env-file
-          path: .env
+          path: some.txt
           retention-days: 1
           if-no-files-found: error
           include-hidden-files: true
@@ -53,7 +53,7 @@ jobs:
         run: |
           echo "Workspace files:"
           ls -la
-          cat .env
+          cat some.txt
 
       # 🔥 Docker build using build-push-action
       - name: Build Docker image
@@ -63,3 +63,8 @@ jobs:
           file: .docker/docker-build-test
           push: false
           tags: artifact-docker-test:latest
+
+      # ✅ FINAL PROOF: Run container & check file inside Docker
+      - name: Run Docker container and verify file
+        run: |
+          docker run --rm artifact-docker-test:latest
