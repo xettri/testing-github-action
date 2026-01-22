@@ -1,30 +1,53 @@
-name: File Persistence Test
+name: Multi Job File Share
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
-  test-file:
+  create-file:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # STEP 1: Create a file
-      - name: Create sample env file
+      - name: Create files
         run: |
-          echo "APP_NAME=SampleApp" > .env
-          echo "VERSION=1.0.0" >> .env
+          echo "APP_NAME=MultiJobApp" > .env
+          mkdir -p src/some
+          echo "hello from job A" > src/some/test.txt
 
-      # STEP 2: Use the file (no upload, no cache)
-      - name: Read file in next step
+      # 🔼 Upload files
+      - name: Upload files
+        uses: actions/upload-artifact@v4
+        with:
+          name: shared-files
+          path: |
+            .env
+            src/some/test.txt
+
+  use-file:
+    runs-on: ubuntu-latest
+    needs: create-file
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # 🔽 Download files
+      - name: Download files
+        uses: actions/download-artifact@v4
+        with:
+          name: shared-files
+
+      - name: Show files
         run: |
-          echo "File exists?"
+          echo "Root directory:"
           ls -la
 
-          echo "File contents:"
+          echo ""
+          echo "src/some directory:"
+          ls -la src/some
+
+          echo ""
+          echo "Read files:"
           cat .env
+          cat src/some/test.txt
